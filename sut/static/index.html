@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AegisPay Sandbox | Ledger &amp; Order Portal</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">AP</span>
+      <div>
+        <h1 class="brand-title">AegisPay Sandbox</h1>
+        <p class="brand-subtitle">Deterministic FinTech Ledger &amp; QA Target</p>
+      </div>
+    </div>
+    <nav class="topbar-nav" aria-label="Session navigation">
+      <span id="nav-user-pill" class="user-pill hidden" data-testid="nav-user-pill"></span>
+      <button id="logout-btn" type="button" class="btn btn-secondary hidden" data-testid="logout-btn">
+        Sign out
+      </button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="alert-banner" class="alert hidden" role="alert" aria-live="assertive" data-testid="alert-banner"></div>
+    <div id="status-banner" class="status-toast hidden" role="status" aria-live="polite" data-testid="status-banner"></div>
+
+    <!-- Authentication View -->
+    <section id="auth-section" class="card auth-card" aria-labelledby="auth-heading">
+      <div class="tab-bar" role="tablist" aria-label="Authentication mode">
+        <button
+          id="tab-login"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="login-panel"
+          class="tab-btn active"
+          data-testid="tab-login"
+        >
+          Sign In
+        </button>
+        <button
+          id="tab-register"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="register-panel"
+          class="tab-btn"
+          data-testid="tab-register"
+        >
+          Create Account
+        </button>
+      </div>
+
+      <h2 id="auth-heading" class="section-title">Access Your Sandbox Wallet</h2>
+
+      <form id="login-panel" class="form-stack" novalidate data-testid="login-form">
+        <div class="field">
+          <label for="login-email">Email address</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" required placeholder="qa.user@aegispay.dev" data-testid="login-email" />
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="Minimum 8 characters" data-testid="login-password" />
+        </div>
+        <button id="login-submit" type="submit" class="btn btn-primary" data-testid="login-submit">
+          Sign In
+        </button>
+      </form>
+
+      <form id="register-panel" class="form-stack hidden" novalidate data-testid="register-form">
+        <div class="field">
+          <label for="reg-name">Full name</label>
+          <input id="reg-name" name="full_name" type="text" autocomplete="name" required minlength="2" placeholder="Ada Lovelace" data-testid="reg-name" />
+        </div>
+        <div class="field">
+          <label for="reg-email">Email address</label>
+          <input id="reg-email" name="email" type="email" autocomplete="email" required placeholder="ada@aegispay.dev" data-testid="reg-email" />
+        </div>
+        <div class="field">
+          <label for="reg-password">Password</label>
+          <input id="reg-password" name="password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters" data-testid="reg-password" />
+        </div>
+        <button id="register-submit" type="submit" class="btn btn-primary" data-testid="register-submit">
+          Create Account
+        </button>
+      </form>
+    </section>
+
+    <!-- Dashboard View -->
+    <section id="dashboard-section" class="dashboard hidden" aria-label="Wallet Dashboard">
+      <div class="metrics-grid">
+        <article class="card metric-card">
+          <span class="metric-label">Available Balance</span>
+          <strong id="metric-balance" class="metric-value" data-testid="metric-balance">$0.00</strong>
+        </article>
+        <article class="card metric-card">
+          <span class="metric-label">Total Deposited</span>
+          <strong id="metric-deposited" class="metric-value" data-testid="metric-deposited">$0.00</strong>
+        </article>
+        <article class="card metric-card">
+          <span class="metric-label">Pending Holds</span>
+          <strong id="metric-pending" class="metric-value" data-testid="metric-pending">$0.00</strong>
+        </article>
+        <article class="card metric-card">
+          <span class="metric-label">Settled Volume</span>
+          <strong id="metric-settled" class="metric-value" data-testid="metric-settled">$0.00</strong>
+        </article>
+      </div>
+
+      <div class="workspace-grid">
+        <article class="card">
+          <h2 class="section-title">1. Deposit Sandbox Funds</h2>
+          <form id="deposit-form" class="form-stack" novalidate data-testid="deposit-form">
+            <div class="field">
+              <label for="deposit-amount">Amount (USD)</label>
+              <input id="deposit-amount" name="amount" type="number" step="0.01" min="0.01" required placeholder="250.00" data-testid="deposit-amount" />
+            </div>
+            <div class="field">
+              <label for="deposit-ref">Reference</label>
+              <input id="deposit-ref" name="reference" type="text" value="ach-sandbox-topup" required maxlength="64" data-testid="deposit-ref" />
+            </div>
+            <button id="deposit-submit" type="submit" class="btn btn-secondary" data-testid="deposit-submit">
+              Deposit Funds
+            </button>
+          </form>
+        </article>
+
+        <article class="card">
+          <h2 class="section-title">2. Create Transfer Order</h2>
+          <form id="order-form" class="form-stack" novalidate data-testid="order-form">
+            <div class="field">
+              <label for="order-recipient">Recipient</label>
+              <input id="order-recipient" name="recipient" type="text" required minlength="2" maxlength="80" placeholder="merchant@acme.io" data-testid="order-recipient" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="order-amount">Amount (USD)</label>
+                <input id="order-amount" name="amount" type="number" step="0.01" min="0.01" required placeholder="45.50" data-testid="order-amount" />
+              </div>
+              <div class="field">
+                <label for="order-currency">Currency</label>
+                <select id="order-currency" name="currency" data-testid="order-currency">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="order-memo">Memo</label>
+              <input id="order-memo" name="memo" type="text" maxlength="140" placeholder="Invoice #4091" data-testid="order-memo" />
+            </div>
+            <div class="field">
+              <label for="order-idem">Idempotency Key (optional)</label>
+              <input id="order-idem" name="idempotency_key" type="text" maxlength="128" placeholder="auto-generated if blank" data-testid="order-idem" />
+            </div>
+            <button id="order-submit" type="submit" class="btn btn-primary" data-testid="order-submit">
+              Submit Order
+            </button>
+          </form>
+        </article>
+      </div>
+
+      <article class="card orders-card">
+        <div class="orders-header">
+          <h2 class="section-title">Transfer Orders Ledger</h2>
+          <button id="refresh-orders-btn" type="button" class="btn btn-ghost" data-testid="refresh-orders-btn">
+            Refresh
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table class="orders-table" aria-label="Transfer orders">
+            <thead>
+              <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Recipient</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Status</th>
+                <th scope="col">Memo</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody" data-testid="orders-tbody">
+              <tr>
+                <td colspan="6" class="empty-cell">No transfer orders yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
