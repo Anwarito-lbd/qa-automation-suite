@@ -173,6 +173,19 @@
     els.metricDeposited.textContent = formatCents(summary.total_deposited_cents);
     els.metricPending.textContent = formatCents(summary.pending_orders_cents);
     els.metricSettled.textContent = formatCents(summary.settled_orders_cents);
+
+    const total = Number(summary.total_deposited_cents || 0);
+    const availPct = total > 0 ? (summary.balance_cents / total) * 100 : 100;
+    const pendPct = total > 0 ? (summary.pending_orders_cents / total) * 100 : 0;
+    const settlePct = total > 0 ? (summary.settled_orders_cents / total) * 100 : 0;
+    const allocAvail = document.getElementById("alloc-available");
+    const allocPend = document.getElementById("alloc-pending");
+    const allocSettle = document.getElementById("alloc-settled");
+    if (allocAvail && allocPend && allocSettle) {
+      allocAvail.style.width = `${availPct.toFixed(1)}%`;
+      allocPend.style.width = `${pendPct.toFixed(1)}%`;
+      allocSettle.style.width = `${settlePct.toFixed(1)}%`;
+    }
     renderOrdersTable(orders);
   }
 

@@ -3,32 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AegisPay Sandbox | Ledger &amp; Order Portal</title>
+  <title>AegisPay Clearing | Deterministic FinTech Ledger</title>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <span class="brand-mark" aria-hidden="true">AP</span>
-      <div>
-        <h1 class="brand-title">AegisPay Sandbox</h1>
-        <p class="brand-subtitle">Deterministic FinTech Ledger &amp; QA Target</p>
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">AP</span>
+        <div>
+          <h1 class="brand-title">AegisPay Clearing</h1>
+          <p class="brand-subtitle">ACID Ledger &amp; Order Settlement Sandbox</p>
+        </div>
       </div>
+      <nav class="topbar-nav" aria-label="Session navigation">
+        <span class="env-pill">SQLite ACID · Deterministic</span>
+        <span id="nav-user-pill" class="user-pill hidden" data-testid="nav-user-pill"></span>
+        <button id="logout-btn" type="button" class="btn btn-quiet hidden" data-testid="logout-btn">
+          Sign out
+        </button>
+      </nav>
     </div>
-    <nav class="topbar-nav" aria-label="Session navigation">
-      <span id="nav-user-pill" class="user-pill hidden" data-testid="nav-user-pill"></span>
-      <button id="logout-btn" type="button" class="btn btn-secondary hidden" data-testid="logout-btn">
-        Sign out
-      </button>
-    </nav>
   </header>
 
   <main class="container">
-    <div id="alert-banner" class="alert hidden" role="alert" aria-live="assertive" data-testid="alert-banner"></div>
-    <div id="status-banner" class="status-toast hidden" role="status" aria-live="polite" data-testid="status-banner"></div>
+    <div id="alert-banner" class="banner banner-alert hidden" role="alert" aria-live="assertive" data-testid="alert-banner"></div>
+    <div id="status-banner" class="banner banner-status hidden" role="status" aria-live="polite" data-testid="status-banner"></div>
 
     <!-- Authentication View -->
-    <section id="auth-section" class="card auth-card" aria-labelledby="auth-heading">
+    <section id="auth-section" class="sheet auth-sheet" aria-labelledby="auth-heading">
+      <div class="auth-header">
+        <h2 id="auth-heading" class="display-title">Open your clearing workspace</h2>
+        <p class="auth-lead">
+          Authenticate with an existing sandbox account or provision a fresh ledger profile.
+        </p>
+      </div>
+
       <div class="tab-bar" role="tablist" aria-label="Authentication mode">
         <button
           id="tab-login"
@@ -54,8 +64,6 @@
         </button>
       </div>
 
-      <h2 id="auth-heading" class="section-title">Access Your Sandbox Wallet</h2>
-
       <form id="login-panel" class="form-stack" novalidate data-testid="login-form">
         <div class="field">
           <label for="login-email">Email address</label>
@@ -66,7 +74,7 @@
           <input id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="Minimum 8 characters" data-testid="login-password" />
         </div>
         <button id="login-submit" type="submit" class="btn btn-primary" data-testid="login-submit">
-          Sign In
+          Sign in to ledger
         </button>
       </form>
 
@@ -84,52 +92,66 @@
           <input id="reg-password" name="password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters" data-testid="reg-password" />
         </div>
         <button id="register-submit" type="submit" class="btn btn-primary" data-testid="register-submit">
-          Create Account
+          Create ledger account
         </button>
       </form>
     </section>
 
     <!-- Dashboard View -->
     <section id="dashboard-section" class="dashboard hidden" aria-label="Wallet Dashboard">
-      <div class="metrics-grid">
-        <article class="card metric-card">
-          <span class="metric-label">Available Balance</span>
-          <strong id="metric-balance" class="metric-value" data-testid="metric-balance">$0.00</strong>
-        </article>
-        <article class="card metric-card">
-          <span class="metric-label">Total Deposited</span>
-          <strong id="metric-deposited" class="metric-value" data-testid="metric-deposited">$0.00</strong>
-        </article>
-        <article class="card metric-card">
-          <span class="metric-label">Pending Holds</span>
-          <strong id="metric-pending" class="metric-value" data-testid="metric-pending">$0.00</strong>
-        </article>
-        <article class="card metric-card">
-          <span class="metric-label">Settled Volume</span>
-          <strong id="metric-settled" class="metric-value" data-testid="metric-settled">$0.00</strong>
-        </article>
-      </div>
+      <section class="sheet ledger-strip" aria-label="Account balances">
+        <div class="ledger-primary">
+          <span class="metric-label">Available balance</span>
+          <strong id="metric-balance" class="hero-figure" data-testid="metric-balance">$0.00</strong>
+          <div class="allocation-track" aria-hidden="true">
+            <span id="alloc-available" class="alloc-seg alloc-avail" style="width: 100%"></span>
+            <span id="alloc-pending" class="alloc-seg alloc-pend" style="width: 0%"></span>
+            <span id="alloc-settled" class="alloc-seg alloc-settle" style="width: 0%"></span>
+          </div>
+          <div class="allocation-legend">
+            <span><i class="dot dot-avail"></i>Available</span>
+            <span><i class="dot dot-pend"></i>Pending hold</span>
+            <span><i class="dot dot-settle"></i>Settled</span>
+          </div>
+        </div>
+        <div class="ledger-secondary">
+          <div class="stat-cell">
+            <span class="metric-label">Total deposited</span>
+            <strong id="metric-deposited" class="stat-figure" data-testid="metric-deposited">$0.00</strong>
+          </div>
+          <div class="stat-cell">
+            <span class="metric-label">Pending holds</span>
+            <strong id="metric-pending" class="stat-figure figure-amber" data-testid="metric-pending">$0.00</strong>
+          </div>
+          <div class="stat-cell">
+            <span class="metric-label">Settled volume</span>
+            <strong id="metric-settled" class="stat-figure figure-muted" data-testid="metric-settled">$0.00</strong>
+          </div>
+        </div>
+      </section>
 
       <div class="workspace-grid">
-        <article class="card">
-          <h2 class="section-title">1. Deposit Sandbox Funds</h2>
+        <article class="sheet">
+          <h2 class="section-title">Fund sandbox wallet</h2>
+          <p class="section-note">Credits integer minor units directly via an atomic deposit entry.</p>
           <form id="deposit-form" class="form-stack" novalidate data-testid="deposit-form">
             <div class="field">
               <label for="deposit-amount">Amount (USD)</label>
               <input id="deposit-amount" name="amount" type="number" step="0.01" min="0.01" required placeholder="250.00" data-testid="deposit-amount" />
             </div>
             <div class="field">
-              <label for="deposit-ref">Reference</label>
+              <label for="deposit-ref">Clearing reference</label>
               <input id="deposit-ref" name="reference" type="text" value="ach-sandbox-topup" required maxlength="64" data-testid="deposit-ref" />
             </div>
             <button id="deposit-submit" type="submit" class="btn btn-secondary" data-testid="deposit-submit">
-              Deposit Funds
+              Credit wallet
             </button>
           </form>
         </article>
 
-        <article class="card">
-          <h2 class="section-title">2. Create Transfer Order</h2>
+        <article class="sheet">
+          <h2 class="section-title">Issue transfer order</h2>
+          <p class="section-note">Reserves funds into a pending hold with Idempotency-Key protection.</p>
           <form id="order-form" class="form-stack" novalidate data-testid="order-form">
             <div class="field">
               <label for="order-recipient">Recipient</label>
@@ -137,7 +159,7 @@
             </div>
             <div class="field-row">
               <div class="field">
-                <label for="order-amount">Amount (USD)</label>
+                <label for="order-amount">Amount</label>
                 <input id="order-amount" name="amount" type="number" step="0.01" min="0.01" required placeholder="45.50" data-testid="order-amount" />
               </div>
               <div class="field">
@@ -149,26 +171,31 @@
                 </select>
               </div>
             </div>
-            <div class="field">
-              <label for="order-memo">Memo</label>
-              <input id="order-memo" name="memo" type="text" maxlength="140" placeholder="Invoice #4091" data-testid="order-memo" />
-            </div>
-            <div class="field">
-              <label for="order-idem">Idempotency Key (optional)</label>
-              <input id="order-idem" name="idempotency_key" type="text" maxlength="128" placeholder="auto-generated if blank" data-testid="order-idem" />
+            <div class="field-row-even">
+              <div class="field">
+                <label for="order-memo">Memo</label>
+                <input id="order-memo" name="memo" type="text" maxlength="140" placeholder="Invoice #4091" data-testid="order-memo" />
+              </div>
+              <div class="field">
+                <label for="order-idem">Idempotency key</label>
+                <input id="order-idem" name="idempotency_key" type="text" maxlength="128" placeholder="Auto-generated if blank" data-testid="order-idem" />
+              </div>
             </div>
             <button id="order-submit" type="submit" class="btn btn-primary" data-testid="order-submit">
-              Submit Order
+              Send transfer
             </button>
           </form>
         </article>
       </div>
 
-      <article class="card orders-card">
+      <article class="sheet orders-sheet">
         <div class="orders-header">
-          <h2 class="section-title">Transfer Orders Ledger</h2>
-          <button id="refresh-orders-btn" type="button" class="btn btn-ghost" data-testid="refresh-orders-btn">
-            Refresh
+          <div>
+            <h2 class="section-title">Transfer orders ledger</h2>
+            <p class="section-note">Real-time view of pending holds, settled clearing items, and released refunds.</p>
+          </div>
+          <button id="refresh-orders-btn" type="button" class="btn btn-quiet" data-testid="refresh-orders-btn">
+            Refresh ledger
           </button>
         </div>
         <div class="table-wrap">
@@ -185,7 +212,7 @@
             </thead>
             <tbody id="orders-tbody" data-testid="orders-tbody">
               <tr>
-                <td colspan="6" class="empty-cell">No transfer orders yet.</td>
+                <td colspan="6" class="empty-cell">No transfer orders yet. Issue a transfer above to verify ledger holds.</td>
               </tr>
             </tbody>
           </table>

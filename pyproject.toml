@@ -27,6 +27,7 @@ dev = [
   "pytest>=8.2.0",
   "hypothesis>=6.100.0",
   "playwright>=1.45.0",
+  "selenium>=4.20.0",
   "ruff>=0.6.0",
   "mypy>=1.11.0",
   "pytest-json-report>=1.5.0",
@@ -42,8 +43,10 @@ addopts = "-v --strict-markers --tb=short"
 markers = [
   "api: Layer 1 API contract and RBAC tests",
   "property: Layer 1 Hypothesis property-based and stateful fuzzing tests",
-  "web: Layer 2 Playwright headless browser E2E tests",
+  "web: Layer 2 Playwright and Selenium headless browser E2E tests",
+  "selenium: Layer 2 Selenium WebDriver cross-engine E2E tests",
   "mobile: Layer 3 Appium/ADB Android mobile QA tests",
+  "unreal: Layer 4 Unreal Engine Gauntlet & telemetry regression harness tests",
 ]
 
 [tool.ruff]

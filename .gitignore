@@ -19,6 +19,12 @@ reports/
 playwright-report/
 test-results/
 
+# Gradle / Kotlin build caches (preserve gradle/wrapper/gradle-wrapper.jar!)
+.gradle/
+mobile-kotlin/.gradle/
+mobile-kotlin/build/
+mobile-kotlin/**/build/
+
 # Secrets & OS
 .env
 .env.*

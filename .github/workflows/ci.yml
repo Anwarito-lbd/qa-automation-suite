@@ -9,7 +9,7 @@ on:
 jobs:
   qa-pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
@@ -20,6 +20,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: "pip"
+
+      - name: Set up Java 21 for Kotlin/Appium Suite
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Install project and QA dependencies
         run: |
@@ -37,10 +46,16 @@ jobs:
       - name: Static Type Verification (Mypy strict)
         run: mypy sut qa_framework tests scripts
 
-      - name: Run 3-Layer QA Suite and Generate Reports
+      - name: Run 4-Layer Python QA Suite and Generate Reports
         env:
           QA_MOBILE_MODE: mock
         run: python scripts/generate_reports.py
+
+      - name: Run Kotlin Appium/JUnit5 Contract Suite
+        working-directory: mobile-kotlin
+        run: |
+          chmod +x gradlew
+          ./gradlew test --no-daemon
 
       - name: Upload QA Telemetry, HTML Report & Visual Proof
         if: always()
@@ -50,6 +65,7 @@ jobs:
           path: |
             reports/qa-summary.json
             reports/qa-report.html
+            mobile-kotlin/build/test-results/test/*.xml
             docs/images/qa-pyramid-report.png
             docs/images/playwright-e2e.png
             docs/images/playwright-mobile-390x844.png
