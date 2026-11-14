@@ -54,12 +54,18 @@ def classify_nodeid(nodeid: str) -> tuple[str, str]:
     normalized = nodeid.replace("\\", "/")
     if "tests/api/test_properties.py" in normalized:
         return "Layer 1: API & Property", "Hypothesis Property/Stateful"
+    if "tests/api/test_jira_reporter.py" in normalized:
+        return "Layer 1: API & Property", "JIRA Defect Integration"
     if "tests/api/" in normalized:
         return "Layer 1: API & Property", "API Contract & RBAC"
+    if "tests/web/test_selenium_e2e.py" in normalized:
+        return "Layer 2: Web E2E", "Selenium WebDriver"
     if "tests/web/" in normalized:
-        return "Layer 2: Web E2E (Playwright)", "Headless Chromium"
+        return "Layer 2: Web E2E", "Playwright Chromium"
     if "tests/mobile/" in normalized:
-        return "Layer 3: Mobile (Appium/ADB)", "UIAutomator2 + ADB"
+        return "Layer 3: Mobile QA", "Appium UIAutomator2 + ADB"
+    if "tests/unreal/" in normalized:
+        return "Layer 4: Unreal QA", "UE5 Gauntlet & Log Gate"
     return "Other", "Uncategorized"
 
 
@@ -116,8 +122,9 @@ def build_summary_from_pytest_json(raw_json_path: Path) -> QASuiteSummary:
 
     ordered_layers = [
         "Layer 1: API & Property",
-        "Layer 2: Web E2E (Playwright)",
-        "Layer 3: Mobile (Appium/ADB)",
+        "Layer 2: Web E2E",
+        "Layer 3: Mobile QA",
+        "Layer 4: Unreal QA",
     ]
     layer_summaries: list[LayerSummary] = []
     for lname in ordered_layers:
